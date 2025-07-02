@@ -85,7 +85,8 @@ async function generateNewsContent() {
 app.get("/gemini", async (req, res) => {
   try {
     const newsContent = await generateNewsContent();
-    res.json({ text: newsContent });
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json({ text: newsContent });
   } catch (error) {
     console.error("Error fetching news:", error.message);
     res.status(500).json({ error: "Failed to fetch news" });
@@ -157,6 +158,9 @@ io.on("connection", (socket) => {
     console.log(`Text set in room ${currentRoom}:`, text);
     const req = await fetch(process.env.GEMINI_URL, {
       method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
     const data = await req.json();
     callback({ text: data.text, success: "Text set successfully" });
