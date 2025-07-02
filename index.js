@@ -156,7 +156,6 @@ io.on("connection", (socket) => {
     if (!currentRoom) {
       return callback({ error: "Must join a room" });
     }
-    console.log(`Text set in room ${currentRoom}:`, text);
     const req = await fetch(process.env.GEMINI_URL, {
       method: "GET",
       headers: {
