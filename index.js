@@ -45,8 +45,8 @@ function stripMarkdown(text) {
 
 async function generateNewsContent() {
   try {
-    const currentTime = new Date().toISOString(); // Add dynamic timestamp
     const controller = new AbortController();
+    const randomSeed = Math.floor(Math.random() * 100000); // Ensures slight prompt uniqueness
 
     const response = await AI.models.generateContent(
       {
@@ -66,14 +66,14 @@ async function generateNewsContent() {
             role: "user",
             parts: [
               {
-                text: `Give the latest global news as of ${currentTime} in exactly 200 words. Use plain text only, no markdown, no formatting, no lists or punctuation other than standard periods and commas. Do not add titles or labels.`,
+                text: `Provide the most recent global news headlines, articles or social media posts and summaries in exactly 200 words. Focus on diversity across world regions and cover politics, environment, economy, and science if relevant. Seed=${randomSeed}`,
               },
             ],
           },
         ],
         generationConfig: {
-          maxOutputTokens: 200,
-          temperature: 0.3,
+          maxOutputTokens: 250,
+          temperature: 0.4,
         },
       },
       { signal: controller.signal }
