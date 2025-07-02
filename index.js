@@ -10,6 +10,10 @@ const io = new Server(server, {
   },
   transports: ["websocket", "polling"],
 });
+
+const cors = require("cors");
+app.use(cors({ origin: "*" }));
+
 const port = process.env.PORT || 8000;
 require("dotenv").config();
 
@@ -42,7 +46,6 @@ function stripMarkdown(text) {
 async function generateNewsContent() {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
 
     const response = await AI.models.generateContent(
       {
@@ -72,8 +75,6 @@ async function generateNewsContent() {
       },
       { signal: controller.signal }
     );
-
-    clearTimeout(timeoutId);
     const rawText = response.text;
     const cleanedText = stripMarkdown(rawText);
     return cleanedText;
