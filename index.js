@@ -171,6 +171,14 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("done-loading", () => {
+    if (!currentRoom) {
+      return;
+    }
+    console.log(`Loading done in room: ${currentRoom}`);
+    socket.to(currentRoom).emit("done-loading");
+  });
+
   socket.on("loading", () => {
     if (!currentRoom) {
       return;
