@@ -152,7 +152,7 @@ io.on("connection", (socket) => {
     socket.to(currentRoom).emit("end");
   });
 
-  socket.on("set-text", async (text, callback) => {
+  socket.on("set-text", async (callback) => {
     if (!currentRoom) {
       return callback({ error: "Must join a room" });
     }
