@@ -170,6 +170,13 @@ io.on("connection", (socket) => {
       callback({ error: "Failed to fetch text" });
     }
   });
+
+  socket.on("loading", () => {
+    if (!currentRoom) {
+      return;
+    }
+    socket.to(currentRoom).emit("loading");
+  });
 });
 
 server.listen(port, () => {
