@@ -45,6 +45,7 @@ function stripMarkdown(text) {
 
 async function generateNewsContent() {
   try {
+    const currentTime = new Date().toISOString(); // Add dynamic timestamp
     const controller = new AbortController();
 
     const response = await AI.models.generateContent(
@@ -54,7 +55,9 @@ async function generateNewsContent() {
           role: "system",
           parts: [
             {
-              text: "You are a factual news assistant. Generate exactly 200 words of plain-text, objective news content in a single paragraph. Do not use markdown, bullet points, headings, emojis, or any special formatting. Do not include line breaks or introductions.",
+              text:
+                "You are a factual news assistant. Generate exactly 200 words of plain-text, objective news content in a single paragraph. " +
+                "Do not use markdown, bullet points, headings, emojis, or any special formatting. Do not include line breaks or introductions.",
             },
           ],
         },
@@ -63,23 +66,25 @@ async function generateNewsContent() {
             role: "user",
             parts: [
               {
-                text: "Give the latest global news in exactly 200 words. Use plain text only, no markdown, no formatting, no lists or punctuation other than standard periods and commas. Do not add titles or labels.",
+                text: `Give the latest global news as of ${currentTime} in exactly 200 words. Use plain text only, no markdown, no formatting, no lists or punctuation other than standard periods and commas. Do not add titles or labels.`,
               },
             ],
           },
         ],
         generationConfig: {
           maxOutputTokens: 200,
-          temperature: 0.2,
+          temperature: 0.3,
         },
       },
       { signal: controller.signal }
     );
+
     const rawText = response.text;
     const cleanedText = stripMarkdown(rawText);
     return cleanedText;
   } catch (error) {
     console.error("Error generating news content:", error.message);
+    return "Failed to generate news.";
   }
 }
 
