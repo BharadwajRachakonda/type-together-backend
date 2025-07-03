@@ -162,6 +162,7 @@ io.on("connection", (socket) => {
       return callback({ error: "Must join a room" });
     }
     try {
+      console.log(process.env.GEMINI_URL);
       const req = await fetch(process.env.GEMINI_URL, {
         method: "GET",
         headers: {
@@ -169,11 +170,22 @@ io.on("connection", (socket) => {
         },
       });
       const data = await req.json();
-      callback({ text: data.text, success: "Text set successfully" });
+      io.to(currentRoom).emit("text-update", {
+        text: data.text,
+        success: "Text set successfully",
+      });
     } catch (error) {
       console.error("Error in set-text:", error.message);
-      callback({ error: "Failed to fetch text" });
+      return callback({ error: "Failed to fetch text" });
     }
+  });
+
+  socket.on("text-update", (text) => {
+    if (!currentRoom) {
+      return;
+    }
+    console.log(`Text updated in room ${currentRoom}:`, text);
+    socket.to(currentRoom).emit("text-update", text);
   });
 
   socket.on("done-loading", () => {
