@@ -55,7 +55,7 @@ async function generateNewsContent() {
           {
             text:
               "You are a text generation assistant for a typing speed website. " +
-              "Your task is to generate exactly 200 words of plain, engaging, natural-sounding English text. " +
+              "Your task is to generate exactly 200 words of plain, engaging, natural-sounding English text of similar length. " +
               "The content should resemble something a human might write: a mix of general observations, short narratives, trivia, or random thoughts. " +
               "Use proper grammar and a balance of simple and complex sentence structures. " +
               "Avoid difficult or rare words, technical terms, poetry, or code. " +
@@ -68,7 +68,7 @@ async function generateNewsContent() {
           role: "user",
           parts: [
             {
-              text: `Generate a random block of plain English text suitable for a typing test. It must be exactly 200 words. Seed=${randomSeed}`,
+              text: `Generate a random block of plain English text suitable for a typing test, make sure all words are in similar length. It must be exactly 200 words. Seed=${randomSeed}`,
             },
           ],
         },
