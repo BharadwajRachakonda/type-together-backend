@@ -45,39 +45,39 @@ function stripMarkdown(text) {
 
 async function generateNewsContent() {
   try {
-    const controller = new AbortController();
-    const randomSeed = Math.floor(Math.random() * 100000); // Ensures slight prompt uniqueness
+    const randomSeed = Math.floor(Math.random() * 100000);
 
-    const response = await AI.models.generateContent(
-      {
-        model: "gemini-2.5-flash",
-        systemInstruction: {
-          role: "system",
+    const response = await AI.models.generateContent({
+      model: "gemini-2.5-flash",
+      systemInstruction: {
+        role: "system",
+        parts: [
+          {
+            text:
+              "You are a text generation assistant for a typing speed website. " +
+              "Your task is to generate exactly 200 words of plain, engaging, natural-sounding English text. " +
+              "The content should resemble something a human might write: a mix of general observations, short narratives, trivia, or random thoughts. " +
+              "Use proper grammar and a balance of simple and complex sentence structures. " +
+              "Avoid difficult or rare words, technical terms, poetry, or code. " +
+              "Do NOT use any markdown, formatting, or line breaks. Do NOT include lists, emojis, or headings.",
+          },
+        ],
+      },
+      contents: [
+        {
+          role: "user",
           parts: [
             {
-              text:
-                "You are a factual news assistant. Generate exactly 200 words of plain-text, objective news content in a single paragraph. " +
-                "Do not use markdown, bullet points, headings, emojis, or any special formatting. Do not include line breaks or introductions.",
+              text: `Generate a random block of plain English text suitable for a typing test. It must be exactly 200 words. Seed=${randomSeed}`,
             },
           ],
         },
-        contents: [
-          {
-            role: "user",
-            parts: [
-              {
-                text: `Provide the most recent global news headlines, articles or social media posts and summaries in exactly 200 words. Focus on diversity across world regions and cover politics, environment, economy, and science if relevant. Seed=${randomSeed}`,
-              },
-            ],
-          },
-        ],
-        generationConfig: {
-          maxOutputTokens: 250,
-          temperature: 0.4,
-        },
+      ],
+      generationConfig: {
+        maxOutputTokens: 250,
+        temperature: 0.6,
       },
-      { signal: controller.signal }
-    );
+    });
 
     const rawText = response.text;
     const cleanedText = stripMarkdown(rawText);
